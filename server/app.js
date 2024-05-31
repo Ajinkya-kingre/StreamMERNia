@@ -1,18 +1,21 @@
-const express = require('express');
-const connect = require('./db/db')
+const express = require("express");
+const connect = require("./db/db")
+const bodyParser = require("body-parser");
+const authRoutes = require("./routes/authRoutes");
 
-// MongoDB Connection
-connect();
-
-//server connection
 const app = express();
 
-app.get('/', (req, res)=>{
-    res.send("Yeah its working!!")
-})
+// Middleware
+app.use(bodyParser.json());
 
-const port = process.env.PORT || 8000
+// Database Connection
+connect();
 
-app.listen(port, () => {
-    console.log(`server is running at port ${port}!!`);
-})
+
+
+// Routes
+app.use("/api", authRoutes);
+
+// Start Server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`Server started on port ${PORT}`));
