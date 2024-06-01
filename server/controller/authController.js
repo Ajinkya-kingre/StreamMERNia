@@ -58,7 +58,7 @@ const login = async (req, res) => {
       userId: user._id,
     };
 
-    const token = await jwt.sign(payload, "secret", { expiresIn: "1d" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
 
     res
       .status(200)
