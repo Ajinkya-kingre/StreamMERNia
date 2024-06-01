@@ -58,14 +58,16 @@ const login = async (req, res) => {
       userId: user._id,
     };
 
-    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: "1d" });
+    const token = jwt.sign(payload, process.env.JWT_SECRET, {
+      expiresIn: "1d",
+    });
 
     res
       .status(200)
       .cookie("token", token, {
         maxAge: 1 * 24 * 60 * 60 * 1000,
         httpOnly: true,
-        sameSite : "strict",
+        sameSite: "strict",
       })
       .json({
         id: user._id,
@@ -78,4 +80,15 @@ const login = async (req, res) => {
   }
 };
 
-module.exports = { register, login };
+// logout
+const logout = (req, res) => {
+  try {
+    return res
+      .status(200)
+      .cookie("token", "", { maxAge: 0 })
+      .json({ message: "Logged out successfully!!" });
+  } catch (error) {
+    console.error(error);
+  }
+};
+module.exports = { register, login, logout };
