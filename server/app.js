@@ -3,6 +3,7 @@ const connect = require("./db/db");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/authRoutes");
+const songRoutes = require("./routes/songRoutes");
 require("dotenv").config();
 
 const app = express();
@@ -21,6 +22,7 @@ app.get("/", (req, res) => {
 
 // Routes
 app.use("/api", authRoutes);
+app.use("/api", songRoutes);
 
 // Start Server
 const PORT = process.env.PORT || 5000;
