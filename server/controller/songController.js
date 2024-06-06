@@ -2,16 +2,20 @@ const Song = require("../models/song");
 
 const addSong = async (req, res) => {
   try {
-    const { title, artist, url } = req.body;
+    console.log("Request Body:", req.body);
+    console.log("Uploaded File:", req.file);
 
-    if (!title || !artist || !url) {
+    const { title, artist } = req.body;
+    const filePath = req.file ? req.file.path : null;
+
+    if (!title || !artist || !filePath) {
       return res.status(400).json({ message: "Fill all the required fields" });
     }
 
     const song = new Song({
       title,
       artist,
-      url,
+      url : filePath,
     });
 
     await song.save();

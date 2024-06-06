@@ -1,33 +1,24 @@
 const multer = require("multer");
 const path = require("path");
-const fs = require("fs");
 
-// Ensure upload directory exits
-
-const uploadsDir = path.join(__dirname, "../uploads");
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
-
-// set storage engine
+// Set storage engine
 const storage = multer.diskStorage({
-  destination: uploadsDir,
-  filename: function (req, file, cb) {
-    cb(
-      null,
-      file.fieldname + "-" + Date.now() + path.extname(file.originalname)
-    );
+  destination: function (req, file, cb) {
+    cb(null, "./uploads/");
   },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + "-" + Date.now() + path.extname(file.originalname));
+  }
 });
 
-// Initailize upload
+// Initialize upload
 const upload = multer({
   storage: storage,
-  limits: { fileSize: 10000000 },
+  limits: { fileSize: 20000000 }, // 20 MB
   fileFilter: function (req, file, cb) {
     checkFileType(file, cb);
-  },
-}).single("song");
+  }
+}).single("song"); // Assuming the file input field in your form is named "song"
 
 // Check file type
 function checkFileType(file, cb) {
@@ -35,8 +26,10 @@ function checkFileType(file, cb) {
   const filetypes = /mp3|wav|flac/;
   // Check ext
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    // Allowed mimetypes
+    const mimetypes = /image\/jpeg|image\/jpg|audio\/x-m4a|image\/png|audio\/mpeg|audio\/wav/;
   // Check mime
-  const mimetype = filetypes.test(file.mimetype);
+  const mimetype = mimetypes.test(file.mimetype);
 
   if (mimetype && extname) {
     return cb(null, true);
@@ -44,6 +37,5 @@ function checkFileType(file, cb) {
     cb("Error: Audio Files Only!");
   }
 }
-
 
 module.exports = upload;

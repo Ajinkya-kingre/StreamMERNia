@@ -10,9 +10,8 @@ const {
 const router = express.Router();
 
 router.route("/songs").post(isAuthenticated, upload, addSong);
-router.route("/songs").post(isAuthenticated, getAllSongs);
-router.route("/songs/:id").post(isAuthenticated, getSongById);
-router.route("/songs/:id").post(isAuthenticated, deleteSongById);
+router.route("/songs").get(isAuthenticated, getAllSongs);
+router.route("/songs/:id").get(isAuthenticated, getSongById);
+router.route("/songs/:id").delete(isAuthenticated, deleteSongById);
 
-
-module.exports = router
+module.exports = router;
