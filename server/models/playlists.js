@@ -12,11 +12,13 @@ const playlistsSchema = new Schema({
     ref: "User",
     required: true,
   },
-  song: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Song",
-    required: true,
-  },
+  song: [
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Song",
+      required: true,
+    },
+  ],
 });
 
 const Playlist = mongoose.model("Playlist", playlistsSchema);

@@ -5,7 +5,7 @@ const createPlaylist = async (req, res) => {
   try {
     const { title, song } = req.body;
     const userId = req.user.userId; // Assuming the authenticated user's ID is stored in req.user
-    console.log(req.user)
+    console.log(req.user);
 
     if (!title || !song) {
       return res.status(400).json({ message: "Title and song are required" });
@@ -14,9 +14,8 @@ const createPlaylist = async (req, res) => {
     const playlist = new Playlist({
       title,
       user: userId,
-      song,
+      song: Array.isArray(song) ? song : [song], // Ensure song is an array
     });
-
     await playlist.save();
 
     return res.status(201).json({ message: "Playlist created", playlist });
@@ -30,8 +29,9 @@ const createPlaylist = async (req, res) => {
 
 const getAllPlaylists = async (req, res) => {
   try {
-    const userId = req.user._id; // Assuming the authenticated user's ID is stored in req.user
+    const userId = req.user.userId; // Assuming the authenticated user's ID is stored in req.user
     const playlists = await Playlist.find({ user: userId }).populate("song");
+    console.log(playlists);
     return res.status(200).json(playlists);
   } catch (error) {
     console.error(error);
@@ -60,12 +60,17 @@ const getPlaylistById = async (req, res) => {
 const updatePlaylist = async (req, res) => {
   try {
     const { id } = req.params;
-    const { title, song } = req.body;
+    const { song } = req.body;
 
+    if (!song) {
+      return res.status(400).json({ message: "Song is required" });
+    }
+
+    // Use $push to add the new song to the song array
     const updatedPlaylist = await Playlist.findByIdAndUpdate(
       id,
-      { title, song }
-      //   { new: true }
+      { $push: { song: song } },
+      { new: true } // Return the updated document
     );
 
     if (!updatedPlaylist) {
